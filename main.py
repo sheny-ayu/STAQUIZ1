@@ -21,7 +21,15 @@ else:
 # Sidebar for variable selection
 st.sidebar.header("Select Variables for Analysis")
 all_columns = df.columns.tolist()
-selected_variables = st.sidebar.multiselect("Choose one or more variables", all_columns, default=all_columns[:1])
+select_all = st.sidebar.checkbox("Select All Variables", value=True)
+if select_all:
+    selected_variables = all_columns
+else:
+    selected_variables = st.sidebar.multiselect("Choose one or more variables", all_columns, default=all_columns[:1])
+
+# Reset settings button
+if st.sidebar.button("Delete All Settings"):
+    st.experimental_rerun()
 
 # Main Section: Dataset Overview
 st.subheader("Dataset Overview")
@@ -113,11 +121,5 @@ if st.sidebar.button("Perform t-test"):
 
 # Download filtered data
 st.sidebar.download_button("Download Filtered Data", df[selected_variables].to_csv(), file_name="filtered_data.csv", mime="text/csv")
-
-# File download of visuals (Optional)
-if st.sidebar.button("Download PCA Plot"):
-    fig.savefig('pca_plot.png')
-    with open("pca_plot.png", "rb") as file:
-        st.sidebar.download_button(label="Download PCA Plot", data=file, file_name="pca_plot.png", mime="image/png")
 
 st.write("Explore your dataset interactively!")
